@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var expressLayouts = require('express-ejs-layouts');
 
 var homeRouter = require('./routes/home');
 var aboutRouter = require('./routes/about');
@@ -16,24 +15,12 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Configurar express-ejs-layouts
-app.use(expressLayouts);
-app.set('layout', 'partials/layout'); // layout.ejs dentro de views/partials/
-
-// Middleware para setar a página ativa (para navbar)
-app.use((req, res, next) => {
-  const pathSegment = req.path.split('/')[1] || 'home';
-  res.locals.activePage = pathSegment;
-  next();
-});
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rotas
 app.use('/', homeRouter);
 app.use('/about', aboutRouter);
 app.use('/contacts', contactsRouter);
